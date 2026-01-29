@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KashyapFitness Elite</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --primary:#0b2545;
+    --accent:#f2b705;
+    --muted:#6b7280;
+    --card:#ffffff;
+    --glass:rgba(255,255,255,0.85);
+    --danger:#ef4444;
+}
+
+*{box-sizing:border-box}
+body{
+    margin:0;
+    font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
+
+    background: linear-gradient(
+        135deg,
+        #dbeafe 0%,     /* light blue */
+        #bfdbfe 30%,    /* visible blue */
+        #c7d2fe 60%,    /* soft indigo */
+        #eef2ff 100%    /* clean finish */
+    );
+    color:var(--primary);
+    padding:28px;
+}
+
+
+
+.container{max-width:1100px;margin:0 auto}
+.card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.96), rgba(250,250,252,0.98));
+    border-radius:14px;
+    padding:22px;
+    box-shadow:0 10px 30px rgba(11,37,69,0.06);
+    margin-bottom:18px;
+    border-left:4px solid rgba(242,183,5,0.12);
+}
+
+.header{display:flex;justify-content:space-between;align-items:center}
+.brand{font-family:Merriweather,serif;font-weight:700;font-size:22px;color:var(--primary);letter-spacing:0.2px}
+.brand span{color:var(--accent);margin-left:8px}
+.brand{text-shadow:0 1px 0 rgba(255,255,255,0.6)}
+
+.grid{display:grid;gap:18px}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.grid-2{grid-template-columns:1fr 1fr}
+@media(max-width:900px){.grid-3,.grid-2{grid-template-columns:1fr}}
+
+h2{font-size:16px;margin:0 0 12px 0;color:var(--primary)}
+
+input,button{width:100%;padding:10px;border-radius:10px;border:1px solid #e6eef9;background:transparent;margin-bottom:10px;font-size:14px}
+input:focus{outline:2px solid rgba(14,165,233,0.12)}
+
+button{background:var(--accent);border:none;color:var(--primary);font-weight:700;cursor:pointer}
+button.secondary{background:transparent;border:1px solid #e6eef9;color:var(--primary)}
+/* small reset button variant */
+.btn-reset{
+    background:var(--danger);
+    color:#fff;
+    padding:4px 10px;        /* smaller height */
+    font-size:12px;          /* smaller text */
+    border-radius:6px;
+    border:none;
+    width:auto;              /* prevents full width */
+    cursor:pointer;
+}
+
+.progress{height:12px;background:#f1f5f9;border-radius:8px;overflow:hidden;margin:8px 0}
+.fill{height:100%;width:0;transition:width .45s ease;background:linear-gradient(90deg,var(--accent),#f29f05)}
+
+.list-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;border:1px solid #f1f5f9}
+.scroll{max-height:260px;overflow-y:auto}
+
+.muted{color:var(--muted);font-size:13px}
+
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header class="card header">
+    <div class="brand"><strong>Ultimate Fitness Tracker 💪🔥</strong></div>
+    <button onclick="resetToday()" class="btn-reset">Reset Today</button>
+</header>
+
+<div class="grid grid-3">
+
+<div class="card">
+<h2>🎯 Goals</h2>
+<input id="goalCals" type="number" placeholder="Calories goal">
+<input id="goalProt" type="number" placeholder="Protein goal (g)">
+<input id="goalWater" type="number" placeholder="Water goal (L)">
+<button onclick="saveGoals()">Save Goals</button>
+</div>
+
+<div class="card">
+<h2>⚖️ BMI Calculator</h2>
+<input id="bmiWeight" type="number" placeholder="Weight (kg)">
+<input id="bmiHeight" type="number" placeholder="Height (cm)">
+<button onclick="calculateBMI()">Calculate BMI</button>
+<h1 id="bmiValue" style="color:var(--accent)">--</h1>
+<p id="bmiStatus"></p>
+</div>
+
+<div class="card">
+<h2>➕ Add Food</h2>
+<input id="foodName" placeholder="Food name">
+<input id="foodCals" type="number" placeholder="Calories">
+<input id="foodProt" type="number" placeholder="Protein">
+<button onclick="addFood()">Add Food</button>
+</div>
+
+</div>
+
+<div class="card">
+<h2>🍎 Common Foods</h2>
+<div class="scroll" id="foodLibrary"></div>
+</div>
+
+<div class="grid grid-2">
+
+<div class="card">
+<h2>📊 Today</h2>
+
+<p>Net Calories: <b><span id="calories">0</span></b> / <span id="gCals">0</span></p>
+<div class="progress"><div id="pCals" class="fill"></div></div>
+
+<p>Protein: <span id="protein">0</span> / <span id="gProt">0</span> g</p>
+<div class="progress"><div id="pProt" class="fill"></div></div>
+
+<p>Water: <span id="water">0</span> / <span id="gWater">0</span> L</p>
+<div class="progress"><div id="pWater" class="fill"></div></div>
+
+<button onclick="addWater()" style="background:var(--accent);color:var(--primary)">+ 1 Glass (250ml)</button>
+</div>
+
+<div class="card">
+<h2>🔥 Workout</h2>
+<input id="workoutName" placeholder="Workout name">
+<input id="workoutCals" type="number" placeholder="Calories burned">
+<button onclick="addWorkout()">Add Workout</button>
+<p><b>Burned Today:</b> <span id="burned">0</span> kcal</p>
+</div>
+
+</div>
+
+
+</div>
+
+<script>
+const today = new Date().toISOString().split("T")[0];
+
+// element references
+const goalCals = document.getElementById('goalCals');
+const goalProt = document.getElementById('goalProt');
+const goalWater = document.getElementById('goalWater');
+const foodName = document.getElementById('foodName');
+const foodCals = document.getElementById('foodCals');
+const foodProt = document.getElementById('foodProt');
+const workoutName = document.getElementById('workoutName');
+const workoutCals = document.getElementById('workoutCals');
+const bmiWeight = document.getElementById('bmiWeight');
+const bmiHeight = document.getElementById('bmiHeight');
+const bmiValue = document.getElementById('bmiValue');
+const bmiStatus = document.getElementById('bmiStatus');
+const calories = document.getElementById('calories');
+const protein = document.getElementById('protein');
+const water = document.getElementById('water');
+const burned = document.getElementById('burned');
+const gCals = document.getElementById('gCals');
+const gProt = document.getElementById('gProt');
+const gWater = document.getElementById('gWater');
+const pCals = document.getElementById('pCals');
+const pProt = document.getElementById('pProt');
+const pWater = document.getElementById('pWater');
+const foodLibrary = document.getElementById('foodLibrary');
+
+const commonFoods = [
+ {name:"Boiled Eggs (2)",c:140,p:12},
+ {name:"Chicken Breast",c:250,p:45},
+ {name:"Oats Bowl",c:300,p:10},
+ {name:"Protein Shake",c:160,p:30},
+ {name:"Rice Bowl",c:200,p:5},
+ {name:"Paneer (100g)",c:265,p:18}
+];
+
+let data = JSON.parse(localStorage.getItem("kashyapFitness")) || {
+ goals:{cals:2000,prot:150,water:3},
+ bmi:{v:0,s:""},
+ days:{}
+};
+
+function getToday(){
+ if(!data.days[today]){
+  data.days[today] = {cals:0,prot:0,water:0,burn:0,foods:[]};
+ }
+ return data.days[today];
+}
+
+function save(){
+ localStorage.setItem("kashyapFitness",JSON.stringify(data));
+ render();
+}
+
+function saveGoals(){
+ data.goals.cals = +goalCals.value || data.goals.cals;
+ data.goals.prot = +goalProt.value || data.goals.prot;
+ data.goals.water = +goalWater.value || data.goals.water;
+ save();
+}
+
+function addFood(){
+ const d = getToday();
+ if(!foodName.value || !foodCals.value) return;
+
+ d.cals += +foodCals.value;
+ d.prot += +foodProt.value || 0;
+ d.foods.unshift({name:foodName.value,cal:+foodCals.value});
+
+ foodName.value = foodCals.value = foodProt.value = "";
+ save();
+}
+
+function addWorkout(){
+ const d = getToday();
+ if(!workoutName.value || !workoutCals.value) return;
+
+ d.burn += +workoutCals.value;
+ workoutName.value = workoutCals.value = "";
+ save();
+}
+
+function addWater(){
+ getToday().water += 0.25;
+ save();
+}
+
+function calculateBMI(){
+ const w = +bmiWeight.value;
+ const h = +bmiHeight.value / 100;
+ if(!w || !h) return;
+
+ const bmi = (w/(h*h)).toFixed(1);
+ const s = bmi<18.5?"Underweight":bmi<25?"Normal":bmi<30?"Overweight":"Obese";
+ data.bmi = {v:bmi,s};
+ save();
+}
+
+function resetToday(){
+ if(confirm("Reset today's data and inputs?")){
+  
+  // reset today's tracked values
+  data.days[today] = {cals:0,prot:0,water:0,burn:0,foods:[]};
+
+  // reset goals to defaults
+  data.goals = {cals:"",prot:"",water:""};
+
+  // reset bmi
+  data.bmi = {v:0,s:""};
+
+  // reset all input fields
+  goalCals.value = data.goals.cals;
+  goalProt.value = data.goals.prot;
+  goalWater.value = data.goals.water;
+
+  foodName.value = "";
+  foodCals.value = "";
+  foodProt.value = "";
+
+  workoutName.value = "";
+  workoutCals.value = "";
+
+  bmiWeight.value = "";
+  bmiHeight.value = "";
+
+  save();
+ }
+}
+
+
+function render(){
+ const d = getToday();
+ const net = Math.max(d.cals - d.burn, 0);
+
+ calories.textContent = net;
+ protein.textContent = d.prot;
+ water.textContent = d.water.toFixed(2);
+ burned.textContent = d.burn;
+
+ gCals.textContent = data.goals.cals;
+ gProt.textContent = data.goals.prot;
+ gWater.textContent = data.goals.water;
+
+ pCals.style.width = Math.min(net/data.goals.cals*100,100)+"%";
+ pProt.style.width = Math.min(d.prot/data.goals.prot*100,100)+"%";
+ pWater.style.width = Math.min(d.water/data.goals.water*100,100)+"%";
+
+ bmiValue.textContent = data.bmi.v || "--";
+ bmiStatus.textContent = data.bmi.s || "";
+
+ renderFoods();
+}
+
+function renderFoods(){
+ foodLibrary.innerHTML="";
+ commonFoods.forEach(f=>{
+  const div=document.createElement("div");
+  div.className="list-item";
+  div.innerHTML=`<span>${f.name}</span><span>${f.c} kcal</span>`;
+  div.onclick=()=>{
+   foodName.value=f.name;
+   foodCals.value=f.c;
+   foodProt.value=f.p;
+  };
+  foodLibrary.appendChild(div);
+ });
+}
+
+// Chart removed per request — graph tracker eliminated
+
+render();
+</script>
+
+</body>
+</html>
