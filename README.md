@@ -130,7 +130,7 @@ Your data stays **on your device**.
 ## 🧑‍💻 Author
 
 **Priyanshu Kashyap**
-Aspiring Software Engineer | Fitness & Tech Enthusiast
+-Aspiring Software Engineer | Fitness & Tech Enthusiast
 
 ---
 
